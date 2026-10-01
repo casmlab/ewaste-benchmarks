@@ -18,3 +18,5 @@ aiohttp>=3.9.0
 pandas>=2.0.0
 requests>=2.31.0
 tqdm>=4.66.0
+eli5
+imblearn
