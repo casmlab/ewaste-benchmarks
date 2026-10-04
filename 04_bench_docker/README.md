@@ -6,10 +6,10 @@ Labels 1,485,834 tweets from the 115th U.S. Congress with policy topics, using t
 
 | File | What it is | Where it comes from |
 |---|---|---|
-| `congress115.csv.gz` | 1,485,834 preprocessed congressional tweets | `data/congress_115/` in Hemphill et al.'s repository |
-| `lr_0.9.pkl` | Trained logistic regression model | `models/best/lr/` in Hemphill et al.'s repository |
+| `congress115.csv.gz` | 1,485,834 preprocessed congressional tweets | `data/congress_115/congress115.csv.gz` in [Hemphill et al.'s repository](https://github.com/casmlab/modeling-political-attention) |
+| `lr_0.9.pkl` | Trained logistic regression model | `models/best/lr/lr_0.9.pkl` in [Hemphill et al.'s repository](https://github.com/casmlab/modeling-political-attention) |
 
-Both files must be in this folder when you build the image. `congress115.csv.gz` is git-ignored, so it isn't included in a clone of this repository.
+None of the data files are committed to this repository. Copy each one into this folder before running `docker build`; the build fails if any are missing.
 
 ## Running
 

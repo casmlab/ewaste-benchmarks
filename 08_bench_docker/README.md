@@ -11,10 +11,10 @@ Based on `benchset_1/08_infer_bertopic.py` in this repository.
 
 | File | What it is | Where it comes from |
 |---|---|---|
-| `Comments.xml` | 87,720 Astronomy Stack Exchange comments | `astronomy.stackexchange.com.7z` from the [Internet Archive Stack Exchange dump](https://archive.org/details/stackexchange_20251231) (see the top-level README) |
-| `bertopic_model.pkl` | Trained BERTopic model, including the embedding model | Produced by Benchmark 7 (this copy is `benchset_1/bertopic_model.pkl`) |
+| `Comments.xml` | 87,720 Astronomy Stack Exchange comments | `astronomy.stackexchange.com.7z` from the [Internet Archive Stack Exchange dump](https://archive.org/details/stackexchange_20251231) (see the top-level README); extract it with e.g. `7z e astronomy.stackexchange.com.7z Comments.xml` |
+| `bertopic_model.pkl` | Trained BERTopic model, including the embedding model | Produced by Benchmark 7: run it with the `-v` output mount (see `07_bench_docker/README.md`), then copy `07_bench_docker/output/bertopic_model.pkl` here |
 
-Both files must be in this folder when you build the image. `bertopic_model.pkl` is git-ignored, so it isn't included in a clone of this repository. Runs don't need internet access.
+None of the data files are committed to this repository. Copy each one into this folder before running `docker build`; the build fails if any are missing. Runs don't need internet access.
 
 ## Running
 

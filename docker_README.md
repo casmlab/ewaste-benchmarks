@@ -11,7 +11,7 @@ Benchmarks 1 and 2 aren't Dockerized yet; we're waiting on their data.
 ## Requirements
 
 - **Docker**, usable by your user (`docker info` should work without `sudo`).
-- **Each benchmark's data files**, copied into its folder before building. Most are git-ignored, so they won't be in a clone of this repository. Each benchmark's README lists them.
+- **Each benchmark's data files**, copied into its folder before building. None of the data or model files are committed to this repository. Each benchmark's README lists the files it needs and where to get them. Benchmark 8's model is produced by running Benchmark 7.
 - **Internet access while building the images.** Running the benchmarks doesn't need it.
 
 ## The benchmarks

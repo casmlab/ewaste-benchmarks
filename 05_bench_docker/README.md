@@ -8,7 +8,7 @@ Trains a 50-topic LDA topic model on 1.7M preprocessed congressional tweets with
 |---|---|---|
 | `congress115_preprocessed.csv.gz` | 1,721,891 preprocessed congressional tweets | Provided by our collaborators (not public) |
 
-The file must be in this folder when you build the image. It's git-ignored, so it isn't included in a clone of this repository. The image downloads MALLET 2.0.8 itself (and checks it against a fixed checksum).
+None of the data files are committed to this repository. Copy each one into this folder before running `docker build`; the build fails if any are missing. The image downloads MALLET 2.0.8 itself (and checks it against a fixed checksum).
 
 ## Running
 

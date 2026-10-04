@@ -11,9 +11,9 @@ Based on `benchset_1/07_fit_bertopic.py` in this repository.
 
 | File | What it is | Where it comes from |
 |---|---|---|
-| `Comments.xml` | 87,720 Astronomy Stack Exchange comments | `astronomy.stackexchange.com.7z` from the [Internet Archive Stack Exchange dump](https://archive.org/details/stackexchange_20251231) (see the top-level README) |
+| `Comments.xml` | 87,720 Astronomy Stack Exchange comments | `astronomy.stackexchange.com.7z` from the [Internet Archive Stack Exchange dump](https://archive.org/details/stackexchange_20251231) (see the top-level README); extract it with e.g. `7z e astronomy.stackexchange.com.7z Comments.xml` |
 
-The file must be in this folder when you build the image. The image also downloads the embedding model while it's being built, so runs don't need internet access.
+None of the data files are committed to this repository. Copy each one into this folder before running `docker build`; the build fails if any are missing. The image also downloads the embedding model while it's being built, so runs don't need internet access.
 
 ## Running
 

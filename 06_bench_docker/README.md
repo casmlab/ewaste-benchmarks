@@ -6,12 +6,11 @@ Infers the topic mix of each of 1.48M congressional tweets using Hemphill et al.
 
 | File | What it is | Where it comes from |
 |---|---|---|
-| `congress115.csv.gz` | 1,485,834 preprocessed congressional tweets (the default input) | `data/congress_115/` in Hemphill et al.'s repository |
-| `russell_processed_0.9.csv.gz` | 41,716 labelled tweets (optional input; see below) | `data/russell/` in Hemphill et al.'s repository |
-| `lda_tw_50_unigram_congress115_inferencer.mallet` | Hemphill et al.'s trained LDA inferencer | `models/best/lda/` in Hemphill et al.'s repository |
-| `export_vocabulary.bsh` | Helper script used when building the image (part of this folder) | This repository |
+| `congress115.csv.gz` | 1,485,834 preprocessed congressional tweets (the default input) | `data/congress_115/congress115.csv.gz` in [Hemphill et al.'s repository](https://github.com/casmlab/modeling-political-attention) |
+| `russell_processed_0.9.csv.gz` | 41,716 labelled tweets (the quick-test input) | `data/russell/russell_processed_0.9.csv.gz` in [Hemphill et al.'s repository](https://github.com/casmlab/modeling-political-attention) |
+| `lda_tw_50_unigram_congress115_inferencer.mallet` | Hemphill et al.'s trained LDA inferencer | `models/best/lda/lda_tw_50_unigram_congress115_inferencer.mallet` in [Hemphill et al.'s repository](https://github.com/casmlab/modeling-political-attention) |
 
-The data files must be in this folder when you build the image. The `.csv.gz` files are git-ignored, so they aren't included in a clone of this repository. The image downloads MALLET 2.0.8 itself (and checks it against a fixed checksum).
+None of the data files are committed to this repository. Copy each one into this folder before running `docker build`; the build fails if any are missing. All three are needed to build, including the Russell file. The image downloads MALLET 2.0.8 itself (and checks it against a fixed checksum).
 
 ## Running
 

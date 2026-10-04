@@ -6,9 +6,9 @@ Trains Hemphill et al.'s supervised policy-topic classifier: a bag-of-words logi
 
 | File | What it is | Where it comes from |
 |---|---|---|
-| `russell_processed_0.9.csv.gz` | Hemphill et al.'s balanced Russell training corpus (41,716 labelled tweets) | `data/russell/` in Hemphill et al.'s repository |
+| `russell_processed_0.9.csv.gz` | Hemphill et al.'s balanced Russell training corpus (41,716 labelled tweets) | `data/russell/russell_processed_0.9.csv.gz` in [Hemphill et al.'s repository](https://github.com/casmlab/modeling-political-attention) |
 
-The file must be in this folder when you build the image. It's git-ignored, so it isn't included in a clone of this repository.
+None of the data files are committed to this repository. Copy each one into this folder before running `docker build`; the build fails if any are missing.
 
 ## Running
 
