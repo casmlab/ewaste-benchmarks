@@ -4,10 +4,11 @@ pandas==0.24.2
 scikit-learn==0.20.4
 imbalanced-learn==0.4.3
 nltk==3.4.5
-stop-words==2.0.1
+stop-words==2018.7.23
 eli5==0.10.1
 matplotlib==3.3.4
 
 # Jupyter Kernel Execution
 ipykernel==5.5.6
 psutil
+joblib==1.1.1

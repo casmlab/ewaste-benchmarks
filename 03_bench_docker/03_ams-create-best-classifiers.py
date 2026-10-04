@@ -241,79 +241,102 @@ pipeline = make_pipeline(vec,lr)
 
 import time
 import psutil
-from joblib import parallel_backend
+from joblib import cpu_count
+# scikit-learn 0.20 parallelizes with its own bundled joblib, so the backend
+# context has to come from that copy to take effect
+from sklearn.externals.joblib import parallel_backend
+
+## Use every CPU available to the container (respects docker --cpus / --cpuset-cpus)
+N_JOBS = cpu_count()
+print(f"Fitting with {N_JOBS} worker processes")
+
+def cpu_seconds():
+    """
+    Returns (main process CPU seconds, worker process CPU seconds).
+
+    joblib/loky runs parallel work in separate worker processes, so
+    time.process_time() alone misses almost all of the computation. Worker
+    time is the sum of live descendant processes plus children that have
+    already exited and been reaped (reported by os.times()).
+    """
+    proc = psutil.Process()
+    t = proc.cpu_times()
+    main = t.user + t.system
+
+    reaped = os.times()
+    workers = reaped.children_user + reaped.children_system
+    for child in proc.children(recursive=True):
+        try:
+            ct = child.cpu_times()
+            workers += ct.user + ct.system + ct.children_user + ct.children_system
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+    return main, workers
 
 def measure_execution(func, name="Task"):
     """
     Measurement hook wrapper to log execution timing and system memory utilization.
     """
     print(f"\n--- [START] {name} ---")
-    cpu_count = psutil.cpu_count(logical=True)
+    n_cpus = cpu_count()
     mem_before = psutil.Process().memory_info().rss / (1024 * 1024)
-    
+
     start_wall = time.perf_counter()
-    start_cpu = time.process_time()
-    
+    start_main, start_workers = cpu_seconds()
+
     result = func()
-    
+
     end_wall = time.perf_counter()
-    end_cpu = time.process_time()
+    end_main, end_workers = cpu_seconds()
     mem_after = psutil.Process().memory_info().rss / (1024 * 1024)
-    
+
     wall_elapsed = end_wall - start_wall
-    cpu_elapsed = end_cpu - start_cpu
-    
+    main_elapsed = end_main - start_main
+    workers_elapsed = end_workers - start_workers
+    cpu_elapsed = main_elapsed + workers_elapsed
+
     print(f"--- [END] {name} ---")
     print(f"Wall-clock time : {wall_elapsed:.4f} seconds")
-    print(f"CPU time        : {cpu_elapsed:.4f} seconds")
-    print(f"Effective Cores : {cpu_elapsed / max(wall_elapsed, 1e-6):.2f} / {cpu_count}")
+    print(f"CPU time        : {cpu_elapsed:.4f} seconds "
+          f"(main {main_elapsed:.4f} + workers {workers_elapsed:.4f})")
+    print(f"Effective Cores : {cpu_elapsed / max(wall_elapsed, 1e-6):.2f} / {n_cpus}")
     print(f"RAM Used Delta  : {mem_after - mem_before:.2f} MB\n")
     
     return result
 
 # ==========================================
-# Loop 1: Scaled over all cores using n_jobs=-1
+# Fit and evaluate one model per tweetset balance, scaled over all available cores (N_JOBS)
 # ==========================================
+## The original notebook fits logistic regression twice: once in a loop over
+## nine tweetset balances (10%-90% of not-policy tweets removed), then again
+## for the 90% balance alone to produce the final model. Only the 90% balance
+## is public (russell_processed_0.9.csv.gz), so with this data both fits would
+## be identical. We run the loop once, which fits the 90% balance a single time.
 
-# Enforce multi-core scaling with n_jobs=-1
-lr_1 = LogisticRegressionCV(multi_class='ovr',max_iter=1000, n_jobs=-1)
-pipeline_1 = make_pipeline(vec, lr_1)
+# Enforce multi-core scaling across all available cores
+lr = LogisticRegressionCV(multi_class='ovr',max_iter=1000, n_jobs=N_JOBS)
+pipeline = make_pipeline(vec, lr)
 
+## reminder: v[0] = x_train, v[2] = y_train, v[1] = x_test, v[3] = y_test
 for k, v in train_test.items():
     print(f"WITH {k*100}% 0S REMOVED")
     
-    # Enforce loky multi-processing backend across all machine CPU cores
-    with parallel_backend('loky', n_jobs=-1):
+    # Enforce loky multi-processing backend across all available CPU cores
+    start = time.perf_counter()
+    with parallel_backend('loky', n_jobs=N_JOBS):
         measure_execution(
-            lambda: pipeline_1.fit(v[0], v[2]), 
+            lambda: pipeline.fit(v[0], v[2]), 
             name=f"Fitting Model (Fraction {k})"
         )
+    elapsed = time.perf_counter() - start
+    print(f"Throughput      : {len(v[0]) / elapsed:,.1f} training tweets/second "
+          f"({len(v[0]):,} tweets)")
     
+    start = time.perf_counter()
     measure_execution(
-        lambda: eval_classifier(pipeline_1, v[1], v[3]), 
+        lambda: eval_classifier(pipeline, v[1], v[3]), 
         name=f"Evaluating Classifier (Fraction {k})"
     )
-
-# ==========================================
-# Loop 2: Filtered Loop with Measurement Hooks
-# ==========================================
-
-lr_2 = LogisticRegressionCV(multi_class='ovr',max_iter=1000, n_jobs=-1)
-pipeline_2 = make_pipeline(vec, lr_2)
-
-for k, v in train_test.items():
-    if k == 0.9:
-        print(f"WITH {k*100}% 0S REMOVED")
-        
-        with parallel_backend('loky', n_jobs=-1):
-            measure_execution(
-                lambda: pipeline_2.fit(v[0], v[2]), 
-                name="Fitting Model (k=0.9)"
-            )
-            
-        measure_execution(
-            lambda: eval_classifier(pipeline_2, v[1], v[3]), 
-            name="Evaluating Classifier (k=0.9)"
-        )
-    else:
-        continue
+    elapsed = time.perf_counter() - start
+    print(f"Throughput      : {len(v[1]) / elapsed:,.1f} test tweets/second "
+          f"({len(v[1]):,} tweets)")
