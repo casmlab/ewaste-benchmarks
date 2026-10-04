@@ -1,6 +1,6 @@
 # Benchmark 3: Logistic regression training
 
-Trains Hemphill et al.'s supervised policy-topic classifier: a bag-of-words logistic regression (`LogisticRegressionCV`) on 41,716 labelled tweets, then evaluates it on a held-out 10%. Based on the "Make Training and Test Sets" section to the end of `notebooks/models/create/supervised/1.0-ams-create-best-classifiers.ipynb` in [Hemphill et al.'s repository](https://github.com/casmlab/modeling-political-attention).
+Trains Hemphill et al.'s supervised policy-topic classifier: a bag-of-words logistic regression (`LogisticRegressionCV`) on 41,716 labelled tweets, then evaluates it on a held-out 10%. Based on the "Make Training and Test Sets", "CountVectorizer" and "Logistic Regression Classifier" sections of `notebooks/models/create/supervised/1.0-ams-create-best-classifiers.ipynb` in [Hemphill et al.'s repository](https://github.com/casmlab/modeling-political-attention).
 
 ## Data files required
 
@@ -41,7 +41,6 @@ Evaluation time includes printing the classification report and drawing the conf
 
   Only the 90% version is public, so with this data both fits would be identical, and the benchmark runs it once.
 - **The other eight dataset versions can't be rebuilt.** Each one would need the full Russell dataset (~20,122 not-policy tweets), which isn't public. Both public Russell files have only 2,012 not-policy tweets each (`russell_processed_0.9.csv.gz` and `russell_liwc_w2v_both.csv.gz`, drawn separately). Combined, that's 3,800 unique tweets, which isn't enough for any other version.
-- **Only logistic regression is fitted.** The notebook also fits Dummy and Naive Bayes classifiers.
 - **`max_iter=1000`.** The original used scikit-learn's default of 100. More iterations means more work per fit. scikit-learn still prints a few "failed to converge" warnings during the run (far fewer than the original), and they don't stop the benchmark.
 - **Fitting runs in parallel on all available cores** (`n_jobs`). The original ran on a single core.
 - **Confusion-matrix plots are drawn but not displayed**, since the container has no screen.
