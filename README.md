@@ -27,7 +27,7 @@ Random effects models, or linear regression models with random effects, are comp
 
 ## Benchmark 3: Statistical Analysis 
 ### Identify relationships between variables by training logistic regression model 
-Logistic Regression models are commonly used by social science researchers to understand statistical relationships among variables in a dataset. This benchmark reproduces Hemphill et al.’s [1, 8] logistic regression model training task. We use **Dataset 2** for this benchmark (see **Dataset 2** above for access instructions). Code for this benchmark is available through Hemphill et al.'s public GitHub repository here: https://github.com/casmlab/modeling-political-attention.git. We use code from the file pathway notebooks/models/create/supervised/1.0-ams-create-best-classifiers.ipynb (language: Python) under the 'Make Training and Test Sets' heading until the end of the notebook. 
+Logistic Regression models are commonly used by social science researchers to understand statistical relationships among variables in a dataset. This benchmark reproduces Hemphill et al.’s [1, 8] logistic regression model training task. We use **Dataset 2** for this benchmark (see **Dataset 2** above for access instructions). Code for this benchmark is available through Hemphill et al.'s public GitHub repository here: https://github.com/casmlab/modeling-political-attention.git. We use code from the file pathway notebooks/models/create/supervised/1.0-ams-create-best-classifiers.ipynb (language: Python) under the 'Make Training and Test Sets', 'CountVectorizer', and 'Logistic Regression Classifier' headings in that order. 
 
 ## Benchmark 4: Statistical Analysis
 ### Infer classifications according to pre-trained logistic regression model 
