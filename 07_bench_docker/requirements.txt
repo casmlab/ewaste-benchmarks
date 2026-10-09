@@ -1,0 +1,19 @@
+# Versions from the benchset_1 Python 3.11 environment. torch is installed
+# separately from PyTorch's CPU-only index (see the Dockerfile).
+bertopic==0.17.4
+sentence-transformers==6.1.0
+transformers==5.17.0
+tokenizers==0.23.2
+safetensors==0.8.0
+umap-learn==0.5.12
+pynndescent==0.6.0
+numba==0.67.0
+hdbscan==0.8.44
+scikit-learn==1.9.1
+numpy==2.4.6
+scipy==1.17.1
+pandas==3.0.6
+plotly==7.1.0
+xmltodict==1.0.4
+joblib==1.6.0
+psutil==7.2.2

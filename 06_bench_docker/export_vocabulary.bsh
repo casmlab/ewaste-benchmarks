@@ -1,0 +1,21 @@
+// Writes the vocabulary of a MALLET topic inferencer as one MALLET import line,
+// with every word in the inferencer's own word-ID order. Importing that line
+// assigns new word IDs in order of first appearance, so the imported file's
+// pipe matches the inferencer's vocabulary exactly (what --use-pipe-from needs).
+// Usage: java bsh.Interpreter export_vocabulary.bsh <inferencer> <output.txt>
+import cc.mallet.topics.TopicInferencer;
+
+inferencer = TopicInferencer.read(new File(bsh.args[0]));
+field = TopicInferencer.class.getDeclaredField("alphabet");
+field.setAccessible(true);
+alphabet = field.get(inferencer);
+
+out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(bsh.args[1]), "UTF-8"));
+out.print("vocabulary,,");
+for (i = 0; i < alphabet.size(); i++) {
+    out.print(alphabet.lookupObject(i));
+    out.print(' ');
+}
+out.println();
+out.close();
+print("Exported " + alphabet.size() + " words");

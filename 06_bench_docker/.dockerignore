@@ -1,0 +1,7 @@
+*
+!requirements.txt
+!06_ams-unigram-lda-inference-MALLET.py
+!russell_processed_0.9.csv.gz
+!lda_tw_50_unigram_congress115_inferencer.mallet
+!export_vocabulary.bsh
+!congress115.csv.gz
