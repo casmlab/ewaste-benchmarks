@@ -1,0 +1,12 @@
+# Versions from the benchset_1 Python 3.11 environment where available
+# (aiohttp and requests weren't installed there). torch is installed separately
+# from PyTorch's CPU-only index (see the Dockerfile).
+sentence-transformers==6.1.0
+transformers==5.17.0
+tokenizers==0.23.2
+safetensors==0.8.0
+pandas==3.0.6
+tqdm==4.70.1
+psutil==7.2.2
+aiohttp==3.14.5
+requests==2.34.2
