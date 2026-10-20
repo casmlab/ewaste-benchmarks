@@ -1,23 +1,25 @@
 # Dockerized benchmarks
 
-Benchmarks 3–8 (described in the top-level `README.md`) each run in their own Docker container. Each one has a folder, `NN_bench_docker/`, holding:
+Benchmarks 1–8 (described in the top-level `README.md`) each run in their own Docker container. Each one has a folder, `NN_bench_docker/`, holding:
 
 - the benchmark script
 - a Dockerfile that installs the right Python version and libraries
 - a README covering what the benchmark does, which data files it needs and where they come from, how to run it, and how it differs from the original code
 
-Benchmarks 1 and 2 aren't Dockerized yet; we're waiting on their data.
+Benchmark 2's real input (`all_posts_w_topic_and_candidate.csv`, Dataset 1's posts with topic labels and each candidate's office and party) isn't available yet. Until it is, its image can be built with synthetic data instead (`--build-arg SYNTHETIC=1`); see its README.
 
 ## Requirements
 
 - **Docker**, usable by your user (`docker info` should work without `sudo`).
-- **Each benchmark's data files**, copied into its folder before building. None of the data or model files are committed to this repository. Each benchmark's README lists the files it needs and where to get them. Benchmark 8's model is produced by running Benchmark 7.
+- **Each benchmark's data files**, copied into its folder before building. Benchmark 2 can use synthetic data until its real file is available. None of the data or model files are committed to this repository. Each benchmark's README lists the files it needs and where to get them. Benchmark 8's model is produced by running Benchmark 7.
 - **Internet access while building the images.** Running the benchmarks doesn't need it.
 
 ## The benchmarks
 
 | Benchmark | Folder | Task | Full run* | Quick test |
 |---|---|---|---|---|
+| 1 | `01_bench_docker/` | Synthetic data generation (LLM) | ~30 h (est.) | `-n 2 --generations 1` (after the image name) |
+| 2 | `02_bench_docker/` | Regressions of engagement on topic (R) | ~7 s (synthetic data) | — (already short) |
 | 3 | `03_bench_docker/` | Logistic regression training | ~1.5 min | — (already short) |
 | 4 | `04_bench_docker/` | Logistic regression inference | ~1.5 min | — (already short) |
 | 5 | `05_bench_docker/` | LDA training (MALLET) | ~26 min | `-e NUM_DOCS=20000 -e NUM_ITERATIONS=50` |
@@ -31,7 +33,7 @@ Benchmark 6 currently runs on a different dataset from the one the top-level REA
 
 ## Checking that everything works
 
-`test_functionality.sh` builds each benchmark's image and runs it once, one after another. It uses the quick-test options for the long benchmarks, and checks that each finishes cleanly and prints its results:
+`test_functionality.sh` builds each benchmark's image and runs it once, one after another. It uses the quick-test options for the long benchmarks (Benchmark 2 uses synthetic data if its real file isn't in its folder), and checks that each finishes cleanly and prints its results:
 
     ./test_functionality.sh            # all benchmarks
     ./test_functionality.sh 05 07      # only the listed benchmarks
