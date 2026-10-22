@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Functionality test for the Dockerized benchmarks: builds each benchmark's
 # image and runs it once, serially, using quick-test options for the long
-# benchmarks (05-08). A benchmark passes if its container exits cleanly and
+# benchmarks (01, 05-08). Benchmark 02 is built with synthetic data if its real
+# data file isn't in its folder. A benchmark passes if its container exits cleanly and
 # prints its final results line. This checks that everything runs; it doesn't
 # produce meaningful timings.
 #
@@ -21,6 +22,8 @@ TIMEOUT_SECONDS=1800  # per benchmark run, not counting the build
 
 # id | folder | image | expected line in the output | docker run options | arguments for the script
 BENCHMARKS=(
+  "01|01_bench_docker|ams-synthetic-data|System Throughput||-n 2 --generations 1"
+  "02|02_bench_docker|ams-engagement-regressions|Total Execution Pipeline||"
   "03|03_bench_docker|ams-create-best-classifiers|Cohen's kappa|"
   "04|04_bench_docker|ams-label-comparisons|Predicted label counts|"
   "05|05_bench_docker|ams-lda-mallet|Throughput .*Gibbs sampling only|-e NUM_DOCS=20000 -e NUM_ITERATIONS=50"
@@ -55,8 +58,14 @@ for entry in "${BENCHMARKS[@]}"; do
   echo "=== Benchmark $id ($folder) ==="
   start=$(date +%s)
 
-  echo "  building $image..."
-  if ! docker build -t "$image" "$REPO_DIR/$folder" >"$log" 2>&1; then
+  build_opts=()
+  # Benchmark 02 uses synthetic data until its real data file is available
+  if [ "$id" = "02" ] && [ ! -f "$REPO_DIR/$folder/all_posts_w_topic_and_candidate.csv" ]; then
+    build_opts=(--build-arg SYNTHETIC=1)
+  fi
+
+  echo "  building $image${build_opts[*]:+ with ${build_opts[*]}}..."
+  if ! docker build "${build_opts[@]}" -t "$image" "$REPO_DIR/$folder" >"$log" 2>&1; then
     echo "  FAIL: build failed (see $log)"
     results+=("$id  FAIL  build failed")
     failures=$((failures + 1))
